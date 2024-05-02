@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long Polling</title>
+</head>
+
+<body>
+    <h2>Notificaciones</h2>
+    <ul id="notificaciones">
+
+    </ul>
+
+    <script>
+        const listaNotificaciones = document.getElementById('notificaciones');
+
+        function pintarNotificacion(notificacion) {
+            const li = document.createElement("li");
+            li.innerText = notificacion.cuerpo;
+
+            listaNotificaciones.appendChild(li);
+        }
+
+        function pintarNotificaciones(notificaciones) {
+            for (let notificacion of notificaciones) {
+                pintarNotificacion(notificacion);
+            }
+        }
+
+        function obtenerNotificaciones() {
+            fetch('http://localhost:3000/notificaciones')
+                .then(res => res.json())
+                .then(data => {
+                    const notificaciones = data.notificaciones;
+                    pintarNotificaciones(notificaciones);
+
+                    obtenerNuevaNotificacion();
+                });
+        };
+
+        function obtenerNuevaNotificacion() {
+            fetch('http://localhost:3000/notificacion-nueva') // pendiente
+            .then(res => res.json())
+            .then(data => {
+                const notificacion = data.notificacion;
+
+                pintarNotificacion(notificacion);
+
+                obtenerNuevaNotificacion();
+            });
+
+        }
+
+        obtenerNotificaciones();
+    </script>
+</body>
+
+</html>
